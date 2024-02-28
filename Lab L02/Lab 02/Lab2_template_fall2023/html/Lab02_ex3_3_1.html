@@ -1,0 +1,178 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>3.3.1</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-09-25"><meta name="DC.source" content="Lab02_ex3_3_1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>3.3.1</h1><pre class="codeinput">ss(1).freq = 27; ss(1).complexAmp = exp(1j*pi/3);
+ss(2).freq = 18; ss(2).complexAmp = 2i;
+ss(3).freq = 6; ss(3).complexAmp = -4;
+<span class="comment">%</span>
+dur = 1;
+tstart = -0.5;
+dt = 1/(27*32); <span class="comment">%-- use the highest frequency to define delta_t</span>
+<span class="comment">%</span>
+ssOut = addCosVals( ss, dur, tstart, dt );
+<span class="comment">%</span>
+plot( ssOut.times, ssOut.values ) <span class="comment">%</span>
+
+
+
+<span class="keyword">function</span> sigOut = addCosVals( cosIn, dur, tstart, dt )
+<span class="comment">%ADDCOSVALS Synthesize a signal from sum of sinusoids</span>
+<span class="comment">%(do not assume all the frequencies are the same)</span>
+<span class="comment">%</span>
+<span class="comment">% usage: sigOut = addCosVals( cosIn, dur, tstart, dt )</span>
+<span class="comment">%</span>
+<span class="comment">% cosIn = vector of structures; each one has the following fields:</span>
+<span class="comment">%   cosIn.freq = frequency (in Hz), usually none should be negative</span>
+<span class="comment">%   cosIn.complexAmp = COMPLEX amplitude of the cosine</span>
+<span class="comment">%</span>
+<span class="comment">% dur = total time duration of all the cosines</span>
+<span class="comment">% start = starting time of all the cosines</span>
+<span class="comment">% dt = time increment for the time vector</span>
+<span class="comment">%</span>
+<span class="comment">% The output structure has only signal values because it is not necessarily a sinusoid</span>
+<span class="comment">%   sigOut.values = vector of signal values at t = sigOut.times</span>
+<span class="comment">%   sigOut.times = vector of times, for the time axis</span>
+<span class="comment">%</span>
+<span class="comment">% The sigOut.times vector should be generated with a small time increment that</span>
+<span class="comment">%   creates 32 samples for the shortest period, i.e., use the period</span>
+<span class="comment">%   corresponding to the highest frequency cosine in the input array of structures.</span>
+
+<span class="comment">% &lt;--- Write your code here ---&gt;</span>
+n = length(cosIn); <span class="comment">% number of sinusoids</span>
+t = tstart:dt:tstart+dur; <span class="comment">% time vector</span>
+x = zeros(1, length(t)); <span class="comment">% initialize sum of sinusoids</span>
+
+<span class="comment">% calculate sum of sinusoids</span>
+<span class="keyword">for</span> k = 1:n
+    x = x + cosIn(k).complexAmp * exp(1j * 2 * pi * cosIn(k).freq * t );
+<span class="keyword">end</span>
+
+<span class="comment">% store results in output structure</span>
+sigOut.values = x;
+sigOut.times = t;
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+</pre><img vspace="5" hspace="5" src="Lab02_ex3_3_1_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% 3.3.1
+
+ss(1).freq = 27; ss(1).complexAmp = exp(1j*pi/3); 
+ss(2).freq = 18; ss(2).complexAmp = 2i; 
+ss(3).freq = 6; ss(3).complexAmp = -4; 
+%
+dur = 1; 
+tstart = -0.5; 
+dt = 1/(27*32); %REPLACE_WITH_DASH_DASH use the highest frequency to define delta_t 
+%
+ssOut = addCosVals( ss, dur, tstart, dt ); 
+%
+plot( ssOut.times, ssOut.values ) %
+
+
+
+function sigOut = addCosVals( cosIn, dur, tstart, dt ) 
+%ADDCOSVALS Synthesize a signal from sum of sinusoids 
+%(do not assume all the frequencies are the same)
+% 
+% usage: sigOut = addCosVals( cosIn, dur, tstart, dt ) 
+% 
+% cosIn = vector of structures; each one has the following fields: 
+%   cosIn.freq = frequency (in Hz), usually none should be negative
+%   cosIn.complexAmp = COMPLEX amplitude of the cosine
+% 
+% dur = total time duration of all the cosines 
+% start = starting time of all the cosines 
+% dt = time increment for the time vector 
+% 
+% The output structure has only signal values because it is not necessarily a sinusoid 
+%   sigOut.values = vector of signal values at t = sigOut.times
+%   sigOut.times = vector of times, for the time axis
+% 
+% The sigOut.times vector should be generated with a small time increment that 
+%   creates 32 samples for the shortest period, i.e., use the period
+%   corresponding to the highest frequency cosine in the input array of structures.
+
+% <REPLACE_WITH_DASH_DASH- Write your code here REPLACE_WITH_DASH_DASH->
+n = length(cosIn); % number of sinusoids
+t = tstart:dt:tstart+dur; % time vector
+x = zeros(1, length(t)); % initialize sum of sinusoids
+
+% calculate sum of sinusoids
+for k = 1:n
+    x = x + cosIn(k).complexAmp * exp(1j * 2 * pi * cosIn(k).freq * t );
+end
+
+% store results in output structure
+sigOut.values = x;
+sigOut.times = t;
+
+end
+##### SOURCE END #####
+--></body></html>
